@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 import pandas as pd
+import csv
+import json
 
 root= tk.Tk()
 
@@ -13,19 +15,24 @@ label1.config(font=('helvetica', 20))
 canvas1.create_window(150, 60, window=label1)
 
 def getCSV ():
-    global read_file
+    global csvfile
+    #global read_file
     
     import_file_path = filedialog.askopenfilename()
-    read_file = pd.read_csv (import_file_path)
+    csvfile = open(import_file_path, 'r')
+    #read_file = pd.read_csv (import_file_path)
     
 browseButton_CSV = tk.Button(text="      Import CSV File     ", command=getCSV, bg='green', fg='white', font=('helvetica', 12, 'bold'))
 canvas1.create_window(150, 130, window=browseButton_CSV)
 
 def convertToJSON ():
-    global read_file
+    global csvfile
     
     export_file_path = filedialog.asksaveasfilename(defaultextension='.json')
-    read_file.to_json (export_file_path)
+    jsonfile = open(export_file_path, 'w')
+    reader = csv.DictReader( csvfile)
+    out = json.dumps( [ row for row in reader ] )
+    jsonfile.write(out)
 
 saveAsButton_JSON = tk.Button(text='Convert CSV to JSON', command=convertToJSON, bg='green', fg='white', font=('helvetica', 12, 'bold'))
 canvas1.create_window(150, 180, window=saveAsButton_JSON)
